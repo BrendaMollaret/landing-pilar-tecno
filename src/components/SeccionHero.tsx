@@ -1,4 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
+import BotonColor from "./BotonColor";
 
 const SeccionHero = () => {
   return (
@@ -11,6 +12,7 @@ const SeccionHero = () => {
               Bienvenido al curso de React. Acá vas a encontrar los cursos y
               recursos para seguir aprendiendo.
             </p>
+            <BotonColor />
           </Col>
           <Col md={6}>
             <div
