@@ -4,10 +4,19 @@ import { useState } from "react";
 const BotonColor = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [color, setColor] = useState("#6f42f5");
+  const [colorAplicado, setColorAplicado] = useState("#6f42f5");
+
+  const aceptarColor = () => {
+    setColorAplicado(color);
+    setMostrarModal(false);
+  };
 
   return (
     <>
-      <Button variant="primary" onClick={() => setMostrarModal(true)}>
+      <Button
+        style={{ backgroundColor: colorAplicado, borderColor: colorAplicado }}
+        onClick={() => setMostrarModal(true)}
+      >
         Cambiar color
       </Button>
 
@@ -28,7 +37,7 @@ const BotonColor = () => {
           <Button variant="secondary" onClick={() => setMostrarModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={() => setMostrarModal(false)}>
+          <Button variant="primary" onClick={aceptarColor}>
             Aceptar
           </Button>
         </Modal.Footer>
