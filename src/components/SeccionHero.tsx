@@ -1,5 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import BotonColor from "./BotonColor";
+import ListaLibros from "./ListaLibros";
 
 const SeccionHero = () => {
   return (
@@ -15,15 +16,7 @@ const SeccionHero = () => {
             <BotonColor />
           </Col>
           <Col md={6}>
-            <div
-              className="rounded-4 bg-white shadow-sm d-flex align-items-center justify-content-center"
-              style={{ minHeight: "220px" }}
-            >
-              <span className="text-secondary">
-                {/* acá podés ubicar una imagen o los cursos */}
-                Próximamente: cursos
-              </span>
-            </div>
+            <ListaLibros />
           </Col>
         </Row>
       </Container>
