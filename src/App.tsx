@@ -1,12 +1,17 @@
+import { Routes, Route } from "react-router-dom";
 import BarraNavegacion from "./components/BarraNavegacion";
-import SeccionHero from "./components/SeccionHero";
+import PaginaInicio from "./pages/PaginaInicio";
+import PaginaLibros from "./pages/PaginaLibros";
 import "./App.css";
 
 function App() {
   return (
     <>
       <BarraNavegacion />
-      <SeccionHero />
+      <Routes>
+        <Route path="/" element={<PaginaInicio />} />
+        <Route path="/libros" element={<PaginaLibros />} />
+      </Routes>
     </>
   );
 }
