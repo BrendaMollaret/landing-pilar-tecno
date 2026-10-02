@@ -7,3 +7,5 @@ export type Recurso = {
   fechaPrestamo?: string;
   fechaDevolucion?: string;
 };
+
+export type RecursoFormulario = Pick<Recurso, "titulo" | "autor" | "categoria" | "estado">;
