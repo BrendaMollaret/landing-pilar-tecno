@@ -1,10 +1,11 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import type { RecursoFormulario } from "../types/Recurso";
+import type { Recurso, RecursoFormulario } from "../types/Recurso";
 
 type Props = {
   mostrar: boolean;
+  libro?: Recurso | null;
   onCerrar: () => void;
   onGuardar: (datos: RecursoFormulario) => Promise<void>;
 };
@@ -25,9 +26,17 @@ const valoresIniciales: RecursoFormulario = {
   estado: "Disponible",
 };
 
-const ModalLibro = ({ mostrar, onCerrar, onGuardar }: Props) => {
+const ModalLibro = ({ mostrar, libro, onCerrar, onGuardar }: Props) => {
   const formik = useFormik<RecursoFormulario>({
-    initialValues: valoresIniciales,
+    initialValues: libro
+      ? {
+          titulo: libro.titulo,
+          autor: libro.autor,
+          categoria: libro.categoria,
+          estado: libro.estado,
+        }
+      : valoresIniciales,
+    enableReinitialize: true,
     validationSchema: esquema,
     onSubmit: async (valores, { resetForm, setStatus }) => {
       try {
@@ -64,12 +73,26 @@ const ModalLibro = ({ mostrar, onCerrar, onGuardar }: Props) => {
     <Modal show={mostrar} onHide={cerrar} centered>
       <Form onSubmit={formik.handleSubmit} noValidate>
         <Modal.Header closeButton>
-          <Modal.Title>Agregar libro</Modal.Title>
+          <Modal.Title>{libro ? "Editar libro" : "Agregar libro"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {campoTexto("titulo", "Título")}
           {campoTexto("autor", "Autor")}
           {campoTexto("categoria", "Categoría")}
+          {libro && (
+            <Form.Group controlId="estado">
+              <Form.Label>Estado</Form.Label>
+              <Form.Select
+                name="estado"
+                value={formik.values.estado}
+                onChange={formik.handleChange}
+              >
+                <option value="Disponible">Disponible</option>
+                <option value="Prestado">Prestado</option>
+                <option value="Vencido">Vencido</option>
+              </Form.Select>
+            </Form.Group>
+          )}
           {formik.status && (
             <p className="text-danger mt-3 mb-0">{formik.status}</p>
           )}

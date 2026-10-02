@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Card, Row, Col, Badge, Button } from "react-bootstrap";
-import { obtenerRecursos, crearRecurso } from "../services/recursoService";
+import {
+  obtenerRecursos,
+  crearRecurso,
+  actualizarRecurso,
+} from "../services/recursoService";
 import type { Recurso, RecursoFormulario } from "../types/Recurso";
 import ModalLibro from "./ModalLibro";
 
@@ -9,6 +13,7 @@ const ListaLibros = () => {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [libroEditado, setLibroEditado] = useState<Recurso | null>(null);
 
   useEffect(() => {
     obtenerRecursos()
@@ -17,9 +22,28 @@ const ListaLibros = () => {
       .finally(() => setCargando(false));
   }, []);
 
-  const agregarLibro = async (datos: RecursoFormulario) => {
-    const nuevo = await crearRecurso(datos);
-    setDatos((anteriores) => [...anteriores, nuevo]);
+  const abrirAgregar = () => {
+    setLibroEditado(null);
+    setMostrarModal(true);
+  };
+
+  const abrirEditar = (libro: Recurso) => {
+    setLibroEditado(libro);
+    setMostrarModal(true);
+  };
+
+  const guardarLibro = async (datos: RecursoFormulario) => {
+    if (libroEditado) {
+      const actualizado = await actualizarRecurso(libroEditado._id, datos);
+      setDatos((anteriores) =>
+        anteriores.map((libro) =>
+          libro._id === actualizado._id ? actualizado : libro,
+        ),
+      );
+    } else {
+      const nuevo = await crearRecurso(datos);
+      setDatos((anteriores) => [...anteriores, nuevo]);
+    }
     setMostrarModal(false);
   };
 
@@ -27,13 +51,14 @@ const ListaLibros = () => {
     <>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 className="mb-0">Libros</h2>
-        <Button onClick={() => setMostrarModal(true)}>Agregar libro</Button>
+        <Button onClick={abrirAgregar}>Agregar libro</Button>
       </div>
 
       <ModalLibro
         mostrar={mostrarModal}
+        libro={libroEditado}
         onCerrar={() => setMostrarModal(false)}
-        onGuardar={agregarLibro}
+        onGuardar={guardarLibro}
       />
 
       {cargando && <p>Cargando...</p>}
@@ -50,6 +75,15 @@ const ListaLibros = () => {
                     {libro.autor} · {libro.categoria}
                   </Card.Subtitle>
                   <Badge bg="info">{libro.estado}</Badge>
+                  <div className="mt-3 d-flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline-primary"
+                      onClick={() => abrirEditar(libro)}
+                    >
+                      Editar
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
