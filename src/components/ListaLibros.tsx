@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { Card, Row, Col, Badge } from "react-bootstrap";
-import { obtenerRecursos } from "../services/recursoService";
-import type { Recurso } from "../types/Recurso";
+import { Card, Row, Col, Badge, Button } from "react-bootstrap";
+import { obtenerRecursos, crearRecurso } from "../services/recursoService";
+import type { Recurso, RecursoFormulario } from "../types/Recurso";
+import ModalLibro from "./ModalLibro";
 
 const ListaLibros = () => {
   const [datos, setDatos] = useState<Recurso[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   useEffect(() => {
     obtenerRecursos()
@@ -15,9 +17,24 @@ const ListaLibros = () => {
       .finally(() => setCargando(false));
   }, []);
 
+  const agregarLibro = async (datos: RecursoFormulario) => {
+    const nuevo = await crearRecurso(datos);
+    setDatos((anteriores) => [...anteriores, nuevo]);
+    setMostrarModal(false);
+  };
+
   return (
     <>
-      <h2 className="mb-3">Libros</h2>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="mb-0">Libros</h2>
+        <Button onClick={() => setMostrarModal(true)}>Agregar libro</Button>
+      </div>
+
+      <ModalLibro
+        mostrar={mostrarModal}
+        onCerrar={() => setMostrarModal(false)}
+        onGuardar={agregarLibro}
+      />
 
       {cargando && <p>Cargando...</p>}
       {error && <p>{error}</p>}
