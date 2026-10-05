@@ -24,6 +24,9 @@ const colorEstado = {
   Vencido: "danger",
 } as const;
 
+const formatearFecha = (fecha: string) =>
+  new Date(fecha).toLocaleDateString("es-AR");
+
 const ListaLibros = () => {
   const [datos, setDatos] = useState<Recurso[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -207,12 +210,14 @@ const ListaLibros = () => {
                     {libro.autor} · {libro.categoria}
                   </Card.Subtitle>
                   <Badge bg={colorEstado[libro.estado]}>{libro.estado}</Badge>
-                  {libro.fechaDevolucion && (
+                  {libro.fechaPrestamo && (
                     <small className="d-block text-secondary mt-2">
-                      Devolver antes del{" "}
-                      {new Date(libro.fechaDevolucion).toLocaleDateString(
-                        "es-AR",
-                      )}
+                      Prestado el {formatearFecha(libro.fechaPrestamo)}
+                    </small>
+                  )}
+                  {libro.fechaDevolucion && (
+                    <small className="d-block text-secondary">
+                      Devolver antes del {formatearFecha(libro.fechaDevolucion)}
                     </small>
                   )}
                   <div className="mt-3 d-flex gap-2">
