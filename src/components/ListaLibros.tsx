@@ -11,6 +11,12 @@ import {
 import type { Recurso, RecursoFormulario } from "../types/Recurso";
 import ModalLibro from "./ModalLibro";
 
+const colorEstado = {
+  Disponible: "success",
+  Prestado: "warning",
+  Vencido: "danger",
+} as const;
+
 const ListaLibros = () => {
   const [datos, setDatos] = useState<Recurso[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -141,7 +147,15 @@ const ListaLibros = () => {
                   <Card.Subtitle className="text-secondary mb-2">
                     {libro.autor} · {libro.categoria}
                   </Card.Subtitle>
-                  <Badge bg="info">{libro.estado}</Badge>
+                  <Badge bg={colorEstado[libro.estado]}>{libro.estado}</Badge>
+                  {libro.fechaDevolucion && (
+                    <small className="d-block text-secondary mt-2">
+                      Devolver antes del{" "}
+                      {new Date(libro.fechaDevolucion).toLocaleDateString(
+                        "es-AR",
+                      )}
+                    </small>
+                  )}
                   <div className="mt-3 d-flex gap-2">
                     <Button
                       size="sm"
