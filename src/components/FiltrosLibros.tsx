@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import type { FiltrosBusqueda } from "../types/Recurso";
 
@@ -11,27 +11,44 @@ const FiltrosLibros = ({ onBuscar }: Props) => {
   const [categoria, setCategoria] = useState("");
   const [estado, setEstado] = useState("");
 
-  const buscar = (evento: React.FormEvent) => {
-    evento.preventDefault();
-    // Solo mandamos los filtros que tengan valor
-    const filtros: FiltrosBusqueda = {};
-    if (autor.trim()) filtros.autor = autor.trim();
-    if (categoria.trim()) filtros.categoria = categoria.trim();
-    if (estado) filtros.estado = estado as FiltrosBusqueda["estado"];
-    onBuscar(filtros);
-  };
+  // Guardamos onBuscar en un ref para que el efecto no se dispare en cada render del padre
+  const onBuscarRef = useRef(onBuscar);
+  const primeraVez = useRef(true);
+
+  useEffect(() => {
+    onBuscarRef.current = onBuscar;
+  }, [onBuscar]);
+
+  useEffect(() => {
+    // La lista inicial ya la carga el padre, no buscamos al montar
+    if (primeraVez.current) {
+      primeraVez.current = false;
+      return;
+    }
+
+    // Esperamos 400ms sin escribir antes de buscar (debounce)
+    const temporizador = setTimeout(() => {
+      const filtros: FiltrosBusqueda = {};
+      if (autor.trim()) filtros.autor = autor.trim();
+      if (categoria.trim()) filtros.categoria = categoria.trim();
+      if (estado) filtros.estado = estado as FiltrosBusqueda["estado"];
+      onBuscarRef.current(filtros);
+    }, 400);
+
+    // Si el usuario sigue escribiendo, cancelamos la búsqueda pendiente
+    return () => clearTimeout(temporizador);
+  }, [autor, categoria, estado]);
 
   const limpiar = () => {
     setAutor("");
     setCategoria("");
     setEstado("");
-    onBuscar({});
   };
 
   return (
-    <Form onSubmit={buscar} className="mb-4">
+    <Form onSubmit={(evento) => evento.preventDefault()} className="mb-4">
       <Row className="g-2">
-        <Col md={3}>
+        <Col md={4}>
           <Form.Control
             placeholder="Autor"
             value={autor}
@@ -56,8 +73,7 @@ const FiltrosLibros = ({ onBuscar }: Props) => {
             <option value="Vencido">Vencido</option>
           </Form.Select>
         </Col>
-        <Col md={3} className="d-flex gap-2">
-          <Button type="submit">Buscar</Button>
+        <Col md={2}>
           <Button variant="outline-secondary" onClick={limpiar}>
             Limpiar
           </Button>

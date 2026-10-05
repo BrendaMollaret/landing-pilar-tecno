@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, Row, Col, Badge, Button, Modal, Alert } from "react-bootstrap";
 import {
   obtenerRecursos,
@@ -33,6 +33,7 @@ const ListaLibros = () => {
   const [libroAEliminar, setLibroAEliminar] = useState<Recurso | null>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [errorAccion, setErrorAccion] = useState<string | null>(null);
+  const ultimaBusqueda = useRef(0);
   const [mensajeAccion, setMensajeAccion] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,15 +44,19 @@ const ListaLibros = () => {
   }, []);
 
   const buscarLibros = async (filtros: FiltrosBusqueda) => {
-    setCargando(true);
+    // Si llegan respuestas desordenadas, solo se usa la de la última búsqueda
+    const numeroBusqueda = ++ultimaBusqueda.current;
     setError(null);
     try {
       const hayFiltros = Object.keys(filtros).length > 0;
-      setDatos(hayFiltros ? await buscarRecursos(filtros) : await obtenerRecursos());
+      const resultado = hayFiltros
+        ? await buscarRecursos(filtros)
+        : await obtenerRecursos();
+      if (numeroBusqueda === ultimaBusqueda.current) setDatos(resultado);
     } catch {
-      setError("No se pudieron cargar los libros");
-    } finally {
-      setCargando(false);
+      if (numeroBusqueda === ultimaBusqueda.current) {
+        setError("No se pudieron cargar los libros");
+      }
     }
   };
 
