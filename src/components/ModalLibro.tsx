@@ -14,6 +14,7 @@ const esquema = Yup.object({
   titulo: Yup.string().trim().required("El título es obligatorio"),
   autor: Yup.string().trim().required("El autor es obligatorio"),
   categoria: Yup.string().trim().required("La categoría es obligatoria"),
+  portada: Yup.string().trim().url("Ingresá una URL válida"),
   estado: Yup.string()
     .oneOf(["Disponible", "Prestado", "Vencido"])
     .required("El estado es obligatorio"),
@@ -23,6 +24,7 @@ const valoresIniciales: RecursoFormulario = {
   titulo: "",
   autor: "",
   categoria: "",
+  portada: "",
   estado: "Disponible",
 };
 
@@ -33,6 +35,7 @@ const ModalLibro = ({ mostrar, libro, onCerrar, onGuardar }: Props) => {
           titulo: libro.titulo,
           autor: libro.autor,
           categoria: libro.categoria,
+          portada: libro.portada ?? "",
           estado: libro.estado,
         }
       : valoresIniciales,
@@ -53,12 +56,12 @@ const ModalLibro = ({ mostrar, libro, onCerrar, onGuardar }: Props) => {
     onCerrar();
   };
 
-  const campoTexto = (nombre: "titulo" | "autor" | "categoria", etiqueta: string) => (
+  const campoTexto = (nombre: "titulo" | "autor" | "categoria" | "portada", etiqueta: string) => (
     <Form.Group className="mb-3" controlId={nombre}>
       <Form.Label>{etiqueta}</Form.Label>
       <Form.Control
         name={nombre}
-        value={formik.values[nombre]}
+        value={formik.values[nombre] ?? ""}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         isInvalid={formik.touched[nombre] && !!formik.errors[nombre]}
@@ -79,6 +82,7 @@ const ModalLibro = ({ mostrar, libro, onCerrar, onGuardar }: Props) => {
           {campoTexto("titulo", "Título")}
           {campoTexto("autor", "Autor")}
           {campoTexto("categoria", "Categoría")}
+          {campoTexto("portada", "URL de la portada (opcional)")}
           {libro && (
             <Form.Group controlId="estado">
               <Form.Label>Estado</Form.Label>
