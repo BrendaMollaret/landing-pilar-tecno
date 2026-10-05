@@ -27,8 +27,14 @@ const colorEstado = {
 const formatearFecha = (fecha: string) =>
   new Date(fecha).toLocaleDateString("es-AR");
 
+// Devuelve las categorías sin repetir y ordenadas alfabéticamente
+const unirCategorias = (actuales: string[], libros: Recurso[]) =>
+  [...new Set([...actuales, ...libros.map((libro) => libro.categoria)])].sort();
+
 const ListaLibros = () => {
   const [datos, setDatos] = useState<Recurso[]>([]);
+  // Se acumulan para que el select de categorías no se achique al filtrar
+  const [categorias, setCategorias] = useState<string[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -41,7 +47,10 @@ const ListaLibros = () => {
 
   useEffect(() => {
     obtenerRecursos()
-      .then(setDatos)
+      .then((libros) => {
+        setDatos(libros);
+        setCategorias((actuales) => unirCategorias(actuales, libros));
+      })
       .catch(() => setError("No se pudieron cargar los libros"))
       .finally(() => setCargando(false));
   }, []);
@@ -76,6 +85,7 @@ const ListaLibros = () => {
   const guardarLibro = async (datos: RecursoFormulario) => {
     if (libroEditado) {
       const actualizado = await actualizarRecurso(libroEditado._id, datos);
+      setCategorias((actuales) => unirCategorias(actuales, [actualizado]));
       setDatos((anteriores) =>
         anteriores.map((libro) =>
           libro._id === actualizado._id ? actualizado : libro,
@@ -84,6 +94,7 @@ const ListaLibros = () => {
     } else {
       const nuevo = await crearRecurso(datos);
       setDatos((anteriores) => [...anteriores, nuevo]);
+      setCategorias((actuales) => unirCategorias(actuales, [nuevo]));
     }
     setMostrarModal(false);
   };
@@ -160,7 +171,7 @@ const ListaLibros = () => {
         </div>
       </div>
 
-      <FiltrosLibros onBuscar={buscarLibros} />
+      <FiltrosLibros categorias={categorias} onBuscar={buscarLibros} />
 
       <ModalLibro
         mostrar={mostrarModal}

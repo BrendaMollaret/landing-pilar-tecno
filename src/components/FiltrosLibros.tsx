@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button, InputGroup } from "react-bootstrap";
 import type { FiltrosBusqueda } from "../types/Recurso";
 
 type Props = {
+  categorias: string[];
   onBuscar: (filtros: FiltrosBusqueda) => void;
 };
 
-const FiltrosLibros = ({ onBuscar }: Props) => {
-  const [autor, setAutor] = useState("");
+const FiltrosLibros = ({ categorias, onBuscar }: Props) => {
+  const [texto, setTexto] = useState("");
   const [categoria, setCategoria] = useState("");
   const [estado, setEstado] = useState("");
 
@@ -29,52 +30,74 @@ const FiltrosLibros = ({ onBuscar }: Props) => {
     // Esperamos 400ms sin escribir antes de buscar (debounce)
     const temporizador = setTimeout(() => {
       const filtros: FiltrosBusqueda = {};
-      if (autor.trim()) filtros.autor = autor.trim();
-      if (categoria.trim()) filtros.categoria = categoria.trim();
+      if (texto.trim()) filtros.texto = texto.trim();
+      if (categoria) filtros.categoria = categoria;
       if (estado) filtros.estado = estado as FiltrosBusqueda["estado"];
       onBuscarRef.current(filtros);
     }, 400);
 
     // Si el usuario sigue escribiendo, cancelamos la búsqueda pendiente
     return () => clearTimeout(temporizador);
-  }, [autor, categoria, estado]);
+  }, [texto, categoria, estado]);
 
   const limpiar = () => {
-    setAutor("");
+    setTexto("");
     setCategoria("");
     setEstado("");
   };
 
   return (
     <Form onSubmit={(evento) => evento.preventDefault()} className="mb-4">
-      <Row className="g-2">
-        <Col md={4}>
-          <Form.Control
-            placeholder="Autor"
-            value={autor}
-            onChange={(evento) => setAutor(evento.target.value)}
-          />
+      <Row className="g-3">
+        <Col lg={5}>
+          <InputGroup>
+            <InputGroup.Text className="bg-white text-secondary">
+              <i className="bi bi-search"></i>
+            </InputGroup.Text>
+            <Form.Control
+              placeholder="Buscar por título, autor..."
+              value={texto}
+              onChange={(evento) => setTexto(evento.target.value)}
+            />
+          </InputGroup>
         </Col>
-        <Col md={3}>
-          <Form.Control
-            placeholder="Categoría"
-            value={categoria}
-            onChange={(evento) => setCategoria(evento.target.value)}
-          />
+        <Col sm={6} lg={3}>
+          <InputGroup>
+            <InputGroup.Text className="bg-white text-secondary">
+              <i className="bi bi-grid"></i>
+            </InputGroup.Text>
+            <Form.Select
+              value={categoria}
+              onChange={(evento) => setCategoria(evento.target.value)}
+            >
+              <option value="">Categoría</option>
+              {categorias.map((nombre) => (
+                <option key={nombre} value={nombre}>
+                  {nombre}
+                </option>
+              ))}
+            </Form.Select>
+          </InputGroup>
         </Col>
-        <Col md={3}>
-          <Form.Select
-            value={estado}
-            onChange={(evento) => setEstado(evento.target.value)}
-          >
-            <option value="">Todos los estados</option>
-            <option value="Disponible">Disponible</option>
-            <option value="Prestado">Prestado</option>
-            <option value="Vencido">Vencido</option>
-          </Form.Select>
+        <Col sm={6} lg={3}>
+          <InputGroup>
+            <InputGroup.Text className="bg-white text-secondary">
+              <i className="bi bi-tag"></i>
+            </InputGroup.Text>
+            <Form.Select
+              value={estado}
+              onChange={(evento) => setEstado(evento.target.value)}
+            >
+              <option value="">Todos los estados</option>
+              <option value="Disponible">Disponible</option>
+              <option value="Prestado">Prestado</option>
+              <option value="Vencido">Vencido</option>
+            </Form.Select>
+          </InputGroup>
         </Col>
-        <Col md={2}>
-          <Button variant="outline-secondary" onClick={limpiar}>
+        <Col lg={1} className="d-grid">
+          <Button variant="light" className="border" onClick={limpiar}>
+            <i className="bi bi-funnel me-1"></i>
             Limpiar
           </Button>
         </Col>
