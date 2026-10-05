@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Card, Row, Col, Badge, Button, Modal } from "react-bootstrap";
+import { Card, Row, Col, Badge, Button, Modal, Alert } from "react-bootstrap";
 import {
   obtenerRecursos,
   crearRecurso,
   actualizarRecurso,
   eliminarRecurso,
+  prestarRecurso,
+  devolverRecurso,
 } from "../services/recursoService";
 import type { Recurso, RecursoFormulario } from "../types/Recurso";
 import ModalLibro from "./ModalLibro";
@@ -17,6 +19,7 @@ const ListaLibros = () => {
   const [libroEditado, setLibroEditado] = useState<Recurso | null>(null);
   const [libroAEliminar, setLibroAEliminar] = useState<Recurso | null>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
+  const [errorAccion, setErrorAccion] = useState<string | null>(null);
 
   useEffect(() => {
     obtenerRecursos()
@@ -63,6 +66,23 @@ const ListaLibros = () => {
     }
   };
 
+  const cambiarPrestamo = async (libro: Recurso) => {
+    setErrorAccion(null);
+    try {
+      const actualizado =
+        libro.estado === "Disponible"
+          ? await prestarRecurso(libro._id)
+          : await devolverRecurso(libro._id);
+      setDatos((anteriores) =>
+        anteriores.map((item) =>
+          item._id === actualizado._id ? actualizado : item,
+        ),
+      );
+    } catch {
+      setErrorAccion("No se pudo actualizar el estado del libro");
+    }
+  };
+
   const cerrarEliminar = () => {
     setLibroAEliminar(null);
     setErrorEliminar(null);
@@ -102,6 +122,12 @@ const ListaLibros = () => {
         </Modal.Footer>
       </Modal>
 
+      {errorAccion && (
+        <Alert variant="danger" dismissible onClose={() => setErrorAccion(null)}>
+          {errorAccion}
+        </Alert>
+      )}
+
       {cargando && <p>Cargando...</p>}
       {error && <p>{error}</p>}
 
@@ -117,6 +143,15 @@ const ListaLibros = () => {
                   </Card.Subtitle>
                   <Badge bg="info">{libro.estado}</Badge>
                   <div className="mt-3 d-flex gap-2">
+                    <Button
+                      size="sm"
+                      variant={
+                        libro.estado === "Disponible" ? "success" : "warning"
+                      }
+                      onClick={() => cambiarPrestamo(libro)}
+                    >
+                      {libro.estado === "Disponible" ? "Prestar" : "Devolver"}
+                    </Button>
                     <Button
                       size="sm"
                       variant="outline-primary"
