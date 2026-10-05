@@ -9,3 +9,9 @@ export type Recurso = {
 };
 
 export type RecursoFormulario = Pick<Recurso, "titulo" | "autor" | "categoria" | "estado">;
+
+export type FiltrosBusqueda = {
+  autor?: string;
+  categoria?: string;
+  estado?: Recurso["estado"];
+};
