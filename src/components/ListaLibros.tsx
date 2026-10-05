@@ -8,6 +8,7 @@ import {
   eliminarRecurso,
   prestarRecurso,
   devolverRecurso,
+  marcarVencidos,
 } from "../services/recursoService";
 import type {
   FiltrosBusqueda,
@@ -32,6 +33,7 @@ const ListaLibros = () => {
   const [libroAEliminar, setLibroAEliminar] = useState<Recurso | null>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [errorAccion, setErrorAccion] = useState<string | null>(null);
+  const [mensajeAccion, setMensajeAccion] = useState<string | null>(null);
 
   useEffect(() => {
     obtenerRecursos()
@@ -108,6 +110,18 @@ const ListaLibros = () => {
     }
   };
 
+  const actualizarVencidos = async () => {
+    setErrorAccion(null);
+    setMensajeAccion(null);
+    try {
+      const cantidad = await marcarVencidos();
+      setMensajeAccion(`Libros marcados como vencidos: ${cantidad}`);
+      setDatos(await obtenerRecursos());
+    } catch {
+      setErrorAccion("No se pudieron actualizar los libros vencidos");
+    }
+  };
+
   const cerrarEliminar = () => {
     setLibroAEliminar(null);
     setErrorEliminar(null);
@@ -117,7 +131,12 @@ const ListaLibros = () => {
     <>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 className="mb-0">Libros</h2>
-        <Button onClick={abrirAgregar}>Agregar libro</Button>
+        <div className="d-flex gap-2">
+          <Button variant="outline-danger" onClick={actualizarVencidos}>
+            Marcar vencidos
+          </Button>
+          <Button onClick={abrirAgregar}>Agregar libro</Button>
+        </div>
       </div>
 
       <FiltrosLibros onBuscar={buscarLibros} />
@@ -148,6 +167,16 @@ const ListaLibros = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {mensajeAccion && (
+        <Alert
+          variant="success"
+          dismissible
+          onClose={() => setMensajeAccion(null)}
+        >
+          {mensajeAccion}
+        </Alert>
+      )}
 
       {errorAccion && (
         <Alert variant="danger" dismissible onClose={() => setErrorAccion(null)}>
