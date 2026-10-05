@@ -1,11 +1,14 @@
 import { Container } from "react-bootstrap";
 import ListaLibros from "../components/ListaLibros";
+import "./PaginaLibros.css";
 
 const PaginaLibros = () => {
   return (
-    <Container className="py-5">
-      <ListaLibros />
-    </Container>
+    <main className="pagina-libros">
+      <Container className="py-5">
+        <ListaLibros />
+      </Container>
+    </main>
   );
 };
 

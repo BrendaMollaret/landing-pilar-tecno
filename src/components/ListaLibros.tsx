@@ -137,13 +137,26 @@ const ListaLibros = () => {
 
   return (
     <>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2 className="mb-0">Libros</h2>
+      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+          <h1 className="h1 fw-bold mb-1">Mis libros</h1>
+          <p className="text-secondary mb-0">
+            Organizá tu biblioteca, seguí tus lecturas y descubrí nuevos libros.
+          </p>
+        </div>
         <div className="d-flex gap-2">
-          <Button variant="outline-danger" onClick={actualizarVencidos}>
+          <Button
+            variant="outline-danger"
+            className="bg-white"
+            onClick={actualizarVencidos}
+          >
+            <i className="bi bi-calendar-x me-2"></i>
             Marcar vencidos
           </Button>
-          <Button onClick={abrirAgregar}>Agregar libro</Button>
+          <Button onClick={abrirAgregar}>
+            <i className="bi bi-plus-lg me-2"></i>
+            Agregar libro
+          </Button>
         </div>
       </div>
 
