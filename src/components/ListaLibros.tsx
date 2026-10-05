@@ -18,6 +18,7 @@ import type {
 import ModalLibro from "./ModalLibro";
 import FiltrosLibros from "./FiltrosLibros";
 import TarjetaLibro from "./TarjetaLibro";
+import TarjetaAgregar from "./TarjetaAgregar";
 
 // Devuelve las categorías sin repetir y ordenadas alfabéticamente
 const unirCategorias = (actuales: string[], libros: Recurso[]) =>
@@ -227,6 +228,9 @@ const ListaLibros = () => {
               />
             </Col>
           ))}
+          <Col md={6} xl={4}>
+            <TarjetaAgregar onAgregar={abrirAgregar} />
+          </Col>
         </Row>
       )}
     </>
