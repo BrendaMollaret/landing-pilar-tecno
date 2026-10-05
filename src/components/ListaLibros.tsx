@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Card, Row, Col, Badge, Button, Modal, Alert } from "react-bootstrap";
+import { Row, Col, Button, Modal, Alert } from "react-bootstrap";
 import {
   obtenerRecursos,
   buscarRecursos,
@@ -17,15 +17,7 @@ import type {
 } from "../types/Recurso";
 import ModalLibro from "./ModalLibro";
 import FiltrosLibros from "./FiltrosLibros";
-
-const colorEstado = {
-  Disponible: "success",
-  Prestado: "warning",
-  Vencido: "danger",
-} as const;
-
-const formatearFecha = (fecha: string) =>
-  new Date(fecha).toLocaleDateString("es-AR");
+import TarjetaLibro from "./TarjetaLibro";
 
 // Devuelve las categorías sin repetir y ordenadas alfabéticamente
 const unirCategorias = (actuales: string[], libros: Recurso[]) =>
@@ -224,53 +216,15 @@ const ListaLibros = () => {
       )}
 
       {!cargando && !error && (
-        <Row>
+        <Row className="g-4">
           {datos.map((libro) => (
-            <Col md={4} key={libro._id}>
-              <Card className="mb-3">
-                <Card.Body>
-                  <Card.Title>{libro.titulo}</Card.Title>
-                  <Card.Subtitle className="text-secondary mb-2">
-                    {libro.autor} · {libro.categoria}
-                  </Card.Subtitle>
-                  <Badge bg={colorEstado[libro.estado]}>{libro.estado}</Badge>
-                  {libro.fechaPrestamo && (
-                    <small className="d-block text-secondary mt-2">
-                      Prestado el {formatearFecha(libro.fechaPrestamo)}
-                    </small>
-                  )}
-                  {libro.fechaDevolucion && (
-                    <small className="d-block text-secondary">
-                      Devolver antes del {formatearFecha(libro.fechaDevolucion)}
-                    </small>
-                  )}
-                  <div className="mt-3 d-flex gap-2">
-                    <Button
-                      size="sm"
-                      variant={
-                        libro.estado === "Disponible" ? "success" : "warning"
-                      }
-                      onClick={() => cambiarPrestamo(libro)}
-                    >
-                      {libro.estado === "Disponible" ? "Prestar" : "Devolver"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline-primary"
-                      onClick={() => abrirEditar(libro)}
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline-danger"
-                      onClick={() => setLibroAEliminar(libro)}
-                    >
-                      Eliminar
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
+            <Col md={6} xl={4} key={libro._id}>
+              <TarjetaLibro
+                libro={libro}
+                onCambiarPrestamo={cambiarPrestamo}
+                onEditar={abrirEditar}
+                onEliminar={setLibroAEliminar}
+              />
             </Col>
           ))}
         </Row>

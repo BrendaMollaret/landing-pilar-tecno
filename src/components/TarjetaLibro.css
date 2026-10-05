@@ -1,0 +1,67 @@
+.tarjeta-libro {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(30, 40, 70, 0.07);
+}
+
+.tarjeta-portada {
+  width: 120px;
+  height: 180px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 0.6rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tarjeta-portada-vacia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8ebf3;
+  color: #9aa3b8;
+  box-shadow: none;
+}
+
+.tarjeta-titulo {
+  font-size: 1.15rem;
+  line-height: 1.25;
+  margin-bottom: 0.15rem;
+  overflow-wrap: anywhere;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.categoria-0 { background: #e3eeff; color: #2461c4; }
+.categoria-1 { background: #efe6fd; color: #7b45c9; }
+.categoria-2 { background: #e0f5e9; color: #22804a; }
+.categoria-3 { background: #fde6e6; color: #c23a3a; }
+
+.estado-disponible { background: #dff5e7; color: #1c7c43; }
+.estado-prestado { background: #fff1c9; color: #8a5a00; }
+.estado-vencido { background: #fde2e2; color: #b02a37; }
+
+.tarjeta-fechas {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e9ecf3;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.tarjeta-acciones {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
