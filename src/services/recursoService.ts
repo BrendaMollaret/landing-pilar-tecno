@@ -57,8 +57,3 @@ export const devolverRecurso = async (id: string): Promise<Recurso> => {
   const respuesta = await axios.put(`${BASE_URL}/${id}/devolver`);
   return respuesta.data;
 };
-
-export const marcarVencidos = async (): Promise<number> => {
-  const respuesta = await axios.put(`${BASE_URL}/negocio/marcar-vencidos`);
-  return respuesta.data.actualizados;
-};

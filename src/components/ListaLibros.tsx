@@ -8,7 +8,6 @@ import {
   eliminarRecurso,
   prestarRecurso,
   devolverRecurso,
-  marcarVencidos,
 } from "../services/recursoService";
 import type {
   FiltrosBusqueda,
@@ -36,7 +35,6 @@ const ListaLibros = () => {
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [errorAccion, setErrorAccion] = useState<string | null>(null);
   const ultimaBusqueda = useRef(0);
-  const [mensajeAccion, setMensajeAccion] = useState<string | null>(null);
 
   useEffect(() => {
     obtenerRecursos()
@@ -122,18 +120,6 @@ const ListaLibros = () => {
     }
   };
 
-  const actualizarVencidos = async () => {
-    setErrorAccion(null);
-    setMensajeAccion(null);
-    try {
-      const cantidad = await marcarVencidos();
-      setMensajeAccion(`Libros marcados como vencidos: ${cantidad}`);
-      setDatos(await obtenerRecursos());
-    } catch {
-      setErrorAccion("No se pudieron actualizar los libros vencidos");
-    }
-  };
-
   const cerrarEliminar = () => {
     setLibroAEliminar(null);
     setErrorEliminar(null);
@@ -148,20 +134,10 @@ const ListaLibros = () => {
             Organizá tu biblioteca, seguí tus lecturas y descubrí nuevos libros.
           </p>
         </div>
-        <div className="d-flex gap-2">
-          <Button
-            variant="outline-danger"
-            className="bg-white"
-            onClick={actualizarVencidos}
-          >
-            <i className="bi bi-calendar-x me-2"></i>
-            Marcar vencidos
-          </Button>
-          <Button onClick={abrirAgregar}>
-            <i className="bi bi-plus-lg me-2"></i>
-            Agregar libro
-          </Button>
-        </div>
+        <Button onClick={abrirAgregar}>
+          <i className="bi bi-plus-lg me-2"></i>
+          Agregar libro
+        </Button>
       </div>
 
       <FiltrosLibros categorias={categorias} onBuscar={buscarLibros} />
@@ -192,16 +168,6 @@ const ListaLibros = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {mensajeAccion && (
-        <Alert
-          variant="success"
-          dismissible
-          onClose={() => setMensajeAccion(null)}
-        >
-          {mensajeAccion}
-        </Alert>
-      )}
 
       {errorAccion && (
         <Alert variant="danger" dismissible onClose={() => setErrorAccion(null)}>
