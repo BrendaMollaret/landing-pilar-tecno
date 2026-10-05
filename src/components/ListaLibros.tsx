@@ -2,14 +2,20 @@ import { useState, useEffect } from "react";
 import { Card, Row, Col, Badge, Button, Modal, Alert } from "react-bootstrap";
 import {
   obtenerRecursos,
+  buscarRecursos,
   crearRecurso,
   actualizarRecurso,
   eliminarRecurso,
   prestarRecurso,
   devolverRecurso,
 } from "../services/recursoService";
-import type { Recurso, RecursoFormulario } from "../types/Recurso";
+import type {
+  FiltrosBusqueda,
+  Recurso,
+  RecursoFormulario,
+} from "../types/Recurso";
 import ModalLibro from "./ModalLibro";
+import FiltrosLibros from "./FiltrosLibros";
 
 const colorEstado = {
   Disponible: "success",
@@ -33,6 +39,19 @@ const ListaLibros = () => {
       .catch(() => setError("No se pudieron cargar los libros"))
       .finally(() => setCargando(false));
   }, []);
+
+  const buscarLibros = async (filtros: FiltrosBusqueda) => {
+    setCargando(true);
+    setError(null);
+    try {
+      const hayFiltros = Object.keys(filtros).length > 0;
+      setDatos(hayFiltros ? await buscarRecursos(filtros) : await obtenerRecursos());
+    } catch {
+      setError("No se pudieron cargar los libros");
+    } finally {
+      setCargando(false);
+    }
+  };
 
   const abrirAgregar = () => {
     setLibroEditado(null);
@@ -101,6 +120,8 @@ const ListaLibros = () => {
         <Button onClick={abrirAgregar}>Agregar libro</Button>
       </div>
 
+      <FiltrosLibros onBuscar={buscarLibros} />
+
       <ModalLibro
         mostrar={mostrarModal}
         libro={libroEditado}
@@ -136,6 +157,10 @@ const ListaLibros = () => {
 
       {cargando && <p>Cargando...</p>}
       {error && <p>{error}</p>}
+
+      {!cargando && !error && datos.length === 0 && (
+        <p className="text-secondary">No se encontraron libros</p>
+      )}
 
       {!cargando && !error && (
         <Row>
