@@ -1,0 +1,38 @@
+.barra-navegacion {
+  background: #232b3a;
+  padding: 0.9rem 0;
+}
+
+.barra-navegacion .nav-link {
+  position: relative;
+  padding-bottom: 0.4rem;
+}
+
+/* Subrayado del link de la página actual */
+.barra-navegacion .nav-link.active {
+  color: #4dabff;
+}
+
+.barra-navegacion .nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: #4dabff;
+}
+
+.barra-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #3a4457;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
