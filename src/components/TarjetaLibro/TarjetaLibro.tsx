@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import type { Recurso } from "../types/Recurso";
+import type { Recurso } from "../../types/Recurso";
 import "./TarjetaLibro.css";
 
 type Props = {
