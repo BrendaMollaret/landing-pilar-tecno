@@ -1,5 +1,5 @@
 import { Container } from "react-bootstrap";
-import ListaLibros from "../components/ListaLibros";
+import ListaLibros from "../components/ListaLibros/ListaLibros";
 import "./PaginaLibros.css";
 
 const PaginaLibros = () => {

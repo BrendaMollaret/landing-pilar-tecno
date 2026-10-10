@@ -8,16 +8,17 @@ import {
   eliminarRecurso,
   prestarRecurso,
   devolverRecurso,
-} from "../services/recursoService";
+} from "../../services/recursoService";
 import type {
   FiltrosBusqueda,
   Recurso,
   RecursoFormulario,
-} from "../types/Recurso";
-import ModalLibro from "./ModalLibro";
-import FiltrosLibros from "./FiltrosLibros";
-import TarjetaLibro from "./TarjetaLibro";
-import TarjetaAgregar from "./TarjetaAgregar";
+} from "../../types/Recurso";
+
+import FiltrosLibros from "../FiltrosLibros/FiltrosLibros";
+import TarjetaLibro from "../TarjetaLibro/TarjetaLibro";
+import TarjetaAgregar from "../TarjetaAgregar/TarjetaAgregar";
+import ModalLibro from "../ModalLibro/ModalLibro";
 
 // Devuelve las categorías sin repetir y ordenadas alfabéticamente
 const unirCategorias = (actuales: string[], libros: Recurso[]) =>
@@ -170,7 +171,11 @@ const ListaLibros = () => {
       </Modal>
 
       {errorAccion && (
-        <Alert variant="danger" dismissible onClose={() => setErrorAccion(null)}>
+        <Alert
+          variant="danger"
+          dismissible
+          onClose={() => setErrorAccion(null)}
+        >
           {errorAccion}
         </Alert>
       )}
