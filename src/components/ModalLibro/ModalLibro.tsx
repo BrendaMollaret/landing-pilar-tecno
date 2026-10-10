@@ -1,7 +1,7 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import type { Recurso, RecursoFormulario } from "../types/Recurso";
+import type { Recurso, RecursoFormulario } from "../../types/Recurso";
 
 type Props = {
   mostrar: boolean;
@@ -56,7 +56,10 @@ const ModalLibro = ({ mostrar, libro, onCerrar, onGuardar }: Props) => {
     onCerrar();
   };
 
-  const campoTexto = (nombre: "titulo" | "autor" | "categoria" | "portada", etiqueta: string) => (
+  const campoTexto = (
+    nombre: "titulo" | "autor" | "categoria" | "portada",
+    etiqueta: string,
+  ) => (
     <Form.Group className="mb-3" controlId={nombre}>
       <Form.Label>{etiqueta}</Form.Label>
       <Form.Control
