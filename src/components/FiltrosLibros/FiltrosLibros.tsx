@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Row, Col, Form, Button, InputGroup } from "react-bootstrap";
-import type { FiltrosBusqueda } from "../types/Recurso";
+import type { FiltrosBusqueda } from "../../types/Recurso";
 
 type Props = {
   categorias: string[];
