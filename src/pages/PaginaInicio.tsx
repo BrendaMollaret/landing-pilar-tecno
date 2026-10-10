@@ -1,6 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import BotonColor from "../components/BotonColor";
+import BotonColor from "../components/BotonColor/BotonColor";
 
 const PaginaInicio = () => {
   return (
